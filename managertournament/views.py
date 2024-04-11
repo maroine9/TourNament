@@ -1,3 +1,4 @@
+from django import forms
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView
 from .models import Tournament ,TournamentForm ,Participant ,Team, Player, Match
@@ -10,9 +11,11 @@ def tournament_list(request):
 def tournament_detail(request, pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     matches = Match.objects.filter(tournament=tournament)
-    teams = Team.objects.filter(tournament=tournament)
+    teams = Team.objects.filter(tournament=tournament).values_list('id', 'name')  # Récupérer les noms des équipes
+    all_teams = Team.objects.all()  # Obtenez toutes les équipes pour le sélecteur de création de match
 
-    return render(request, 'tournament_detail.html', {'tournament': tournament, 'teams': teams})
+    return render(request, 'tournament_detail.html', {'tournament': tournament, 'teams': teams, 'all_teams': all_teams})
+
 
 def team_list(request):
     teams = Team.objects.all()
@@ -63,43 +66,44 @@ def tournament_create(request):
     if request.method == 'POST':
         tournament_form = TournamentForm(request.POST)
         if tournament_form.is_valid():
+            # Création d'un tournoi à partir des données du formulaire
             tournament = tournament_form.save()
-            # Créer deux équipes par défaut
-            Team.objects.create(name='Team 1', tournament=tournament)
-            Team.objects.create(name='Team 2', tournament=tournament)
+
+            # Récupération des noms des équipes à partir des données POST
+            team1_name = request.POST.get('team1')
+            team2_name = request.POST.get('team2')
+
+            # Création des objets d'équipe associés au tournoi
+            team1 = Team.objects.create(name=team1_name, tournament=tournament)
+            team2 = Team.objects.create(name=team2_name, tournament=tournament)
+
             return redirect('managertournament:tournament_detail', pk=tournament.pk)
     else:
         tournament_form = TournamentForm()
     return render(request, 'tournament_create.html', {'tournament_form': tournament_form})
 
-
-from django.shortcuts import render, redirect
-from django.http import HttpResponseBadRequest
-from .models import Match, Tournament
-
 def create_match(request, tournament_id):
     if request.method == 'POST':
-        
-        team1_name = request.POST.get('team1')
-        team2_name = request.POST.get('team2')
+        print(request.POST)  # Affiche les données du formulaire dans la console
+        team1_id = request.POST.get('team1')
+        team2_id = request.POST.get('team2')
         date = request.POST.get('date')
         time = request.POST.get('time')
 
-        if not all([team1_name, team2_name, date, time]):
+        if not all([team1_id, team2_id, date, time]):
             return HttpResponseBadRequest("Tous les champs sont requis pour créer un match.")
 
         tournament = get_object_or_404(Tournament, pk=tournament_id)
 
-        team1 = get_object_or_404(Team, name=team1_name)
-        team2 = get_object_or_404(Team, name=team2_name)
-        
+        team1 = get_object_or_404(Team, pk=team1_id, tournament=tournament)
+        team2 = get_object_or_404(Team, pk=team2_id, tournament=tournament)
+
         match = Match.objects.create(tournament=tournament, team1=team1, team2=team2, date=date, time=time)
 
         return redirect('managertournament:tournament_detail', pk=tournament_id)
 
     else:
-        return HttpResponseBadRequest("Invalid request")
-
+        return HttpResponseBadRequest("Requête invalide")
 
 
 def update_match(request, match_id):

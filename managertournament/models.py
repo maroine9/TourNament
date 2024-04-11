@@ -4,6 +4,7 @@ from django.db import models
 from django import forms
 from django.utils import timezone
 
+
 class Tournament(models.Model):
     SPORT_TYPES = (
         ('football', 'Football'),
@@ -14,14 +15,18 @@ class Tournament(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     sport_type = models.CharField(max_length=100, choices=SPORT_TYPES)
-    
+    teams = models.ManyToManyField('Team', related_name='tournaments', blank=True)
     app_label = 'managertournament'
     # Ajoutez d'autres champs selon vos besoins
 
 class TournamentForm(forms.ModelForm):
+    team1 = forms.CharField(max_length=100, label='Équipe 1')
+    team2 = forms.CharField(max_length=100, label='Équipe 2')
+
     class Meta:
         model = Tournament
-        fields = ['name', 'start_date', 'end_date', 'sport_type']
+        fields = ['name', 'start_date', 'end_date', 'sport_type', 'team1', 'team2']
+
 
 class Team(models.Model):
     name = models.CharField(max_length=100)
