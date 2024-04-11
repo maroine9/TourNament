@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Gestion de Tournois{% endblock %}</title>
+    <!-- Ajoutez vos liens vers les fichiers CSS ici -->
+    <style>
+      /* Ajoutez votre CSS personnalisé ici */
+      header {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+      }
+      nav {
+        display: flex;
+        justify-content: center;
+        background-color: #444;
+        padding: 10px;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+      footer {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Gestion de Tournois</h1>
+    </header>
+
+    <nav>
+      <!-- Ajoutez vos liens de navigation ici -->
+      <a href="{% url 'managertournament:tournament_list' %}"
+        >Liste des tournois</a
+      >
+      <a href="{% url 'managertournament:team_list' %}">Liste des équipes</a>
+      <a href="{% url 'managertournament:player_list' %}">Liste des joueurs</a>
+      <!-- Ajoutez d'autres liens de navigation selon vos besoins -->
+      <a href="{% url 'managertournament:tournament_create' %}"
+        >Créer un tournoi</a
+      >
+    </nav>
+
+    <main>
+      {% block content %}
+      <!-- Contenu spécifique à chaque page sera inséré ici -->
+      {% endblock %}
+    </main>
+
+    <footer>
+      <!-- Ajoutez votre contenu de pied de page ici -->
+      <p>&copy; 2024 Gestion de Tournois. Tous droits réservés.</p>
+    </footer>
+  </body>
+</html>

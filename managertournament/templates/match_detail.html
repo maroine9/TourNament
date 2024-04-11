@@ -1,0 +1,7 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Détails du match</h2>
+<h3>{{ match.team1 }} vs {{ match.team2 }}</h3>
+<p>Date et heure : {{ match.date_time }}</p>
+<p>Résultat : {{ match.team1_score }} - {{ match.team2_score }}</p>
+<!-- Ajoutez d'autres détails du match ici -->
+{% endblock %}

@@ -1,0 +1,89 @@
+<!-- tournament_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du tournoi</title>
+</head>
+<body>
+    <h2>Détails du tournoi</h2>
+    <h3>Informations sur le tournoi :</h3>
+    <p><strong>Nom :</strong> {{ tournament.name }}</p>
+    <p><strong>Date de début :</strong> {{ tournament.start_date }}</p>
+    <p><strong>Date de fin :</strong> {{ tournament.end_date }}</p>
+    <p><strong>Type de sport :</strong> {{ tournament.get_sport_type_display }}</p>
+
+    <h3>Résultats des matchs :</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Equipe 1</th>
+                <th>Score</th>
+                <th>Equipe 2</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in tournament.match_set.all %}
+            <tr>
+                <td>{{ match.team1.name }}</td>
+                <td>{{ match.score_team1 }} - {{ match.score_team2 }}</td>
+                <td>{{ match.team2.name }}</td>
+                <td>{{ match.status }}</td>
+                <td>{{ match.date }}</td>
+                <td>
+                    <form method="POST" action="{% url 'managertournament:update_match' match.pk %}">
+                        {% csrf_token %}
+                        <input type="number" name="score_team1" value="{{ match.score_team1 }}" min="0" required> -
+                        <input type="number" name="score_team2" value="{{ match.score_team2 }}" min="0" required>
+                        <select name="status">
+                            <option value="scheduled" {% if match.status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+                            <option value="in_progress" {% if match.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                            <option value="finished" {% if match.status == 'finished' %}selected{% endif %}>Finished</option>
+                        </select>
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date" value="{{ match.date }}" required>
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Classement des équipes :</h3>
+    <ol>
+        {% for team in tournament.team_set.all %}
+        <li>{{ team.name }} - {{ team.calculate_points }}</li>
+        {% endfor %}
+    </ol>
+    <!-- Bouton pour créer un nouveau match -->
+    <form method="POST" action="{% url 'managertournament:create_match' tournament.pk %}">
+
+        <h3>Create a Match : </h3>
+        {% csrf_token %}
+        <label for="team1">Team 1:</label>
+        <select id="team1" name="team1">
+            {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.name }}</option>
+            {% endfor %}
+        </select>
+        
+        <label for="team2">Team 2:</label>
+        <select id="team2" name="team2">
+            {% for team in teams %}
+            <option value="{{ team.name }}">{{ team.name }}</option>
+            {% endfor %}
+        </select>
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date">
+        <label for="time">Time:</label>
+        <input type="time" id="time" name="time">
+        <input type="submit" value="Create Match">
+    </form>
+    <button onclick="window.location.href='/managertournament/';">Retour</button>
+</body>
+</html>

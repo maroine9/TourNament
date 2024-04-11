@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Liste des tournois</h2>
+<ul>
+  {% for tournament in tournaments %}
+  <li>
+    <a href="{% url 'managertournament:tournament_detail' tournament.pk %}"
+      >{{ tournament.name }}</a
+    >
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

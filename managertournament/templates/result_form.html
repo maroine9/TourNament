@@ -1,0 +1,37 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Saisie des résultats</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="match">Match :</label>
+    <select class="form-control" id="match" name="match" required>
+      {% for match in matches %}
+      <option value="{{ match.id }}">
+        {{ match.team1.name }} vs {{ match.team2.name }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="team1_score">Score de l'équipe 1 :</label>
+    <input
+      type="number"
+      class="form-control"
+      id="team1_score"
+      name="team1_score"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="team2_score">Score de l'équipe 2 :</label>
+    <input
+      type="number"
+      class="form-control"
+      id="team2_score"
+      name="team2_score"
+      required
+    />
+  </div>
+  <button type="submit" class="btn btn-primary">Soumettre</button>
+</form>
+{% endblock %}

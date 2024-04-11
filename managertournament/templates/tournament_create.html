@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajout de tournoi</title>
+  </head>
+  <body>
+    <h2>Ajout de tournoi</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <label for="name">Nom du tournoi:</label><br />
+      <input type="text" id="name" name="name" required /><br /><br />
+
+      <label for="start_date">Date de début:</label><br />
+      <input
+        type="date"
+        id="start_date"
+        name="start_date"
+        required
+      /><br /><br />
+
+      <label for="end_date">Date de fin:</label><br />
+      <input type="date" id="end_date" name="end_date" required /><br /><br />
+
+      <label for="sport_type">Type de sport:</label><br />
+      <select id="sport_type" name="sport_type" required>
+        <option value="football">Football</option>
+        <option value="basketball">Basketball</option>
+        <option value="tennis">Tennis</option></select
+      ><br /><br />
+
+      <div id="team_fields">
+        <!-- Champs pour saisir les noms des équipes -->
+        <div class="team_field">
+          <label for="team1">Équipe 1:</label>
+          <input type="text" id="team1" name="team1" required /><br />
+        </div>
+        <div class="team_field">
+          <label for="team2">Équipe 2:</label>
+          <input type="text" id="team2" name="team2" required /><br />
+        </div>
+      </div>
+
+      <button type="button" id="add_team">Ajouter une équipe</button
+      ><br /><br />
+
+      <button type="submit">Ajouter</button>
+      <button
+        type="button"
+        onclick="window.location.href='/managertournament/';"
+      >
+        Annuler
+      </button>
+    </form>
+
+    <script>
+      // Fonction pour ajouter dynamiquement des champs pour saisir les noms des équipes
+      document.getElementById("add_team").onclick = function () {
+        var teamCount = document.querySelectorAll(".team_field").length + 1;
+        var newTeamField = document.createElement("div");
+        newTeamField.className = "team_field";
+        newTeamField.innerHTML =
+          '<label for="team' +
+          teamCount +
+          '">Équipe ' +
+          teamCount +
+          ":</label>" +
+          '<input type="text" id="team' +
+          teamCount +
+          '" name="team' +
+          teamCount +
+          '" required><br>';
+        document.getElementById("team_fields").appendChild(newTeamField);
+      };
+    </script>
+  </body>
+</html>

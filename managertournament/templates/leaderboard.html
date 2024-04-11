@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Classement des équipes</h2>
+<ol>
+  {% for team in teams %}
+  <li>{{ team.name }} - {{ team.score }}</li>
+  {% endfor %}
+</ol>
+{% endblock %}
